@@ -26,9 +26,13 @@ public class Member {
         this.username = username;
     }
 
-    public Member(String username, int age, Team team) {
-        this.username = username;
+    public Member(String username, int age) {
+        this(username);
         this.age = age;
+    }
+
+    public Member(String username, int age, Team team) {
+        this(username, age);
 
         if (team != null) {
             changeTeam(team);
