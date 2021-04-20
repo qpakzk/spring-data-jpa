@@ -1,17 +1,22 @@
 package study.datajpa.repository;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.NonUniqueResultException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -140,5 +145,29 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        Member m3 = new Member("AAA", 30);
+
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        memberRepository.save(m3);
+
+        assertThrows(IncorrectResultSizeDataAccessException.class, () -> {
+            memberRepository.findMemberByUsername("AAA");
+        });
+
+        List<Member> findMembers = memberRepository.findListByUsername("CCC");
+        assertThat(findMembers.size()).isEqualTo(0);
+
+        Member findMember = memberRepository.findMemberByUsername("CCC");
+        assertThat(findMember).isNull();
+
+        Optional<Member> findOptionalMember = memberRepository.findOptionalByUsername("CCC");
+        assertThat(findOptionalMember).isEqualTo(Optional.empty());
     }
 }
