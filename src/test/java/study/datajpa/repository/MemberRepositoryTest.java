@@ -306,4 +306,23 @@ class MemberRepositoryTest {
             System.out.println("member.team = " + member.getTeam().getName());
         }
     }
+
+    @Test
+    void queryHint() {
+        //given
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        em.flush();
+        em.clear();
+
+        //when
+        Member findMember = memberRepository.findReadOnlyById(member.getId());
+        findMember.setUsername("member2");
+        em.flush();
+        em.clear();
+
+        //then
+        Member actualMember = memberRepository.findById(member.getId()).get();
+        assertThat(actualMember.getUsername()).isEqualTo("member1");
+    }
 }
