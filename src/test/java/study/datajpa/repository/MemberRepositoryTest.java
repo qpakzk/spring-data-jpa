@@ -1,5 +1,6 @@
 package study.datajpa.repository;
 
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -298,6 +299,10 @@ class MemberRepositoryTest {
         for (Member member : members) {
             System.out.println("member = " + member.getUsername());
             System.out.println("member.teamClass = " + member.getTeam().getClass());
+
+            boolean initialized = Hibernate.isInitialized(member.getTeam());
+            assertThat(initialized).isTrue();
+
             System.out.println("member.team = " + member.getTeam().getName());
         }
     }
