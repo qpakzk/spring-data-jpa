@@ -325,4 +325,16 @@ class MemberRepositoryTest {
         Member actualMember = memberRepository.findById(member.getId()).get();
         assertThat(actualMember.getUsername()).isEqualTo("member1");
     }
+
+    @Test
+    void lock() {
+        //given
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        em.flush();
+        em.clear();
+
+        //when
+        List<Member> members = memberRepository.findLockByUsername("member1");
+    }
 }
